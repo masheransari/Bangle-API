@@ -54,7 +54,7 @@ class MyModel extends CI_Model
                     return $this->common->getGenericResponse($this->constant->CONSTANT_USER, $object, 'Successfully login.');
                 }
             } else {
-                return $this->common->getGenericErrorResponse(204, 'Internal server error.');
+                return $this->common->getGenericErrorResponse(204, 'Credentials are not valid');
             }
         }
     }
@@ -76,7 +76,7 @@ class MyModel extends CI_Model
             return $this->common->unauthorizedUserResponse();
         } else {
             if ($q->expired_at < date('Y-m-d H:i:s')) {
-                return json_output(401, array('status' => 401, 'message' => 'Your session has been expired.'));
+                return json_output(401, array('status' => 402, 'message' => 'Your session has been expired.'));
             } else {
                 $updated_at = date('Y-m-d H:i:s');
                 $expired_at = date("Y-m-d H:i:s", strtotime('+1 minutes'));
