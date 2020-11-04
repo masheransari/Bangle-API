@@ -7,15 +7,15 @@ class Auth extends CI_Controller
     public function login()
     {
         $method = $_SERVER['REQUEST_METHOD'];
-//        echo $method;
+        $data = json_decode($this->input->raw_input_stream, true);
         if ($method != 'POST') {
             json_output(400, array('status' => 400, 'message' => 'Bad request.'));
         } else {
 
             $check_auth_client = $this->MyModel->check_auth_client();
             if ($check_auth_client == true) {
-                $username = $_REQUEST['username'];
-                $password = $_REQUEST['password'];
+                $username = $data['username'];
+                $password = $data['password'];
 
                 $response = $this->MyModel->login($username, $password);
                 json_output(200, $response);
