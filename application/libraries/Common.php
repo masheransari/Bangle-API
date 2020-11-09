@@ -2,9 +2,11 @@
 
 class Common
 {
+
     public function unauthorizedUserResponse()
     {
-        return $this->returnResponse(401, 'Unauthorized User', $this->generateFalseResponse());
+        $errREsponse = $this->generateFalseResponse();
+        return $this->returnResponse(401, 'Unauthorized User', $errREsponse);
     }
 
     public function getGenericResponse($key, $keyValue, $message)
@@ -15,13 +17,15 @@ class Common
 
     public function getGenericErrorResponse($responseCode, $message)
     {
-        return $this->returnResponse($responseCode, $message, $this->generateFalseResponse());
+        $errREsponse = $this->generateFalseResponse();
+//        print_r($errREsponse);
+        return $this->returnResponse($responseCode, $message, $errREsponse);
     }
 
 
     public function generateFalseResponse()
     {
-        return (object)array('success' => false);
+        return array('success' => 'false');
     }
 
     public function returnResponse($responseCode, $message, $result)
@@ -31,7 +35,7 @@ class Common
 
     public function createResultObject($success, $key, $data)
     {
-        return ['success' => $success, $key => $data];
+        return array('success' => $success, $key => $data);
     }
 
     public function createObject($key, $value)

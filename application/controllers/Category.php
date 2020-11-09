@@ -6,30 +6,23 @@ class Category extends CI_Controller {
 	public function __construct()
     {
         parent::__construct();
-
         $this->load->model('CategoryModel');
+        $this->load->library("Common");
 
-     // $CategoryModel =  $this->load->model("CategoryModel");
-        /*
-        $check_auth_client = $this->CategoryModel->check_auth_client();
-		if($check_auth_client != true){
-			die($this->output->get_output());
-		}
-		*/
     }
 
 	public function index()
 	{
 		$method = $_SERVER['REQUEST_METHOD'];
-		if($method != 'GET'){
-			json_output(400,array('status' => 400,'message' => 'Bad request.'));
-		} else {
+		if($method != 'POST'){
+             json_output(200,$this->common->getGenericErrorResponse(400, 'Bad request.'));
+        } else {
 			$check_auth_client = $this->MyModel->check_auth_client();
 			if($check_auth_client == true){
 		        $response = $this->MyModel->auth();
 		        if($response['status'] == 200){
 		        	$resp = $this->CategoryModel->all_data();
-	    			json_output($response['status'],$resp);
+                    json_output(200,$this->common->getGenericResponse("categories", $resp,"Cateogfries Details"));
 		        }
 			}
 		}
@@ -38,8 +31,8 @@ class Category extends CI_Controller {
 	public function detail($id)
 	{
 		$method = $_SERVER['REQUEST_METHOD'];
-		if($method != 'GET' || $this->uri->segment(3) == '' || is_numeric($this->uri->segment(3)) == FALSE){
-			json_output(400,array('status' => 400,'message' => 'Bad request.'));
+		if($method == 'GET' || $this->uri->segment(3) == '' || is_numeric($this->uri->segment(3)) == FALSE){
+            return $this->common->getGenericErrorResponse(400, array('status', 'message','Bad request.'));
 		} else {
 			$check_auth_client = $this->MyModel->check_auth_client();
 			if($check_auth_client == true){
