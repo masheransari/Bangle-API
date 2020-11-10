@@ -50,7 +50,7 @@ class Category extends CI_Controller
     {
         $method = $_SERVER['REQUEST_METHOD'];
         if ($method != 'POST') {
-            json_output(400, array('status' => 400, 'message' => 'Bad request.'));
+            json_output(200, $this->common->getGenericErrorResponse(400, 'Bad request.'));
         } else {
             $check_auth_client = $this->MyModel->check_auth_client();
             if ($check_auth_client == true) {
@@ -70,43 +70,46 @@ class Category extends CI_Controller
         }
     }
 
-    public function update($id)
+    public function update()
     {
         $method = $_SERVER['REQUEST_METHOD'];
-        if ($method != 'PUT' || $this->uri->segment(3) == '' || is_numeric($this->uri->segment(3)) == FALSE) {
-            json_output(400, array('status' => 400, 'message' => 'Bad request.'));
+        $data = json_decode($this->input->raw_input_stream, true);
+        if ($method != 'POST') {
+            json_output(200, $this->common->getGenericErrorResponse(400, 'Bad request.'));
         } else {
             $check_auth_client = $this->MyModel->check_auth_client();
             if ($check_auth_client == true) {
                 $response = $this->MyModel->auth();
                 $respStatus = $response['status'];
                 if ($response['status'] == 200) {
-                    $params = json_decode(file_get_contents('php://input'), TRUE);
                     $params['updated_at'] = date('Y-m-d H:i:s');
-                    if ($params['name'] == "") {
-                        $respStatus = 400;
-                        $resp = array('status' => 400, 'message' => 'name & cnic can\'t empty');
-                    } else {
-                        $resp = $this->CategoryModel->update_data($id, $params);
-                    }
-                    json_output($respStatus, $resp);
+                    $params['name'] = $data['name'];
+                    $params['id'] = $data['id'];
+                    $params['created_by'] = $this->input->get_request_header('User-ID', TRUE);
+                    $resp = $this->CategoryModel->update_data($params['id'], $params);
+                    json_output(200, $this->common->getGenericResponse("response", null, "Category updated"));
                 }
             }
         }
     }
 
-    public function delete($id)
+    public function delete()
     {
         $method = $_SERVER['REQUEST_METHOD'];
-        if ($method != 'DELETE' || $this->uri->segment(3) == '' || is_numeric($this->uri->segment(3)) == FALSE) {
-            json_output(400, array('status' => 400, 'message' => 'Bad request.'));
+        $data = json_decode($this->input->raw_input_stream, true);
+        if ($method != 'POST') {
+            json_output(200, $this->common->getGenericErrorResponse(400, 'Bad request.'));
         } else {
             $check_auth_client = $this->MyModel->check_auth_client();
             if ($check_auth_client == true) {
                 $response = $this->MyModel->auth();
                 if ($response['status'] == 200) {
-                    $resp = $this->CategoryModel->delete_data($id);
-                    json_output($response['status'], $resp);
+                    $params['updated_at'] = date('Y-m-d H:i:s');
+                    $params['id'] = $data['id'];
+                    $params['status'] = 0;
+                    $params['created_by'] = $this->input->get_request_header('User-ID', TRUE);
+                    $resp = $this->CategoryModel->delete_data($params['id'], $params);
+                    json_output(200, $this->common->getGenericResponse("response", null, "Category Deleted"));
                 }
             }
         }
