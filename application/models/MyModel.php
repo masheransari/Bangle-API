@@ -69,10 +69,12 @@ class MyModel extends CI_Model
             json_output(200, $this->common->unauthorizedUserResponse());
         } else {
             if ($q->expired_at < date('Y-m-d H:i:s')) {
-                return json_output(200, array('status' => 402, 'message' => 'Your session has been expired.'));
+//                json_output(200, $this->common->unauthorizedUserResponse());
+                json_output(200,$this->common->getGenericErrorResponse(402,"Session Expired")); //$this->common->unauthorizedUserResponse());
+//                return json_output(200, array('status' => 402, 'message' => 'Your session has been expired.'));
             } else {
                 $updated_at = date('Y-m-d H:i:s');
-                $expired_at = date("Y-m-d H:i:s", strtotime('+1 minutes'));
+                $expired_at = date("Y-m-d H:i:s", strtotime('+30 minutes'));
                 $this->db->where('users_id', $users_id)->where('token', $token)->update('users_authentication', array('expired_at' => $expired_at, 'updated_at' => $updated_at));
                 return array('status' => 200, 'message' => 'Authorized.');
             }
