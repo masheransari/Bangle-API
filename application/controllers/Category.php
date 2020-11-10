@@ -84,7 +84,7 @@ class Category extends CI_Controller
                     $params['name'] = $data['name'];
                     $params['id'] = $data['id'];
                     $params['created_by'] = $this->input->get_request_header('User-ID', TRUE);
-                    $resp = $this->CategoryModel->update_data($params['id'], $params);
+                    $resp = $this->CategoryModel->update_data($data['id'], $params);
                     json_output(200, $this->common->getGenericResponse("response", null, "Category updated"));
                 }
             }
@@ -107,7 +107,7 @@ class Category extends CI_Controller
                     $params['id'] = $data['id'];
                     $params['status'] = 0;
                     $params['created_by'] = $this->input->get_request_header('User-ID', TRUE);
-                    $resp = $this->CategoryModel->delete_data($params['id'], $params);
+                    $resp = $this->CategoryModel->delete_data($data['id'], $params);
                     json_output(200, $this->common->getGenericResponse("response", null, "Category Deleted"));
                 }
             }
