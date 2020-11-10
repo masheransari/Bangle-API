@@ -9,6 +9,7 @@ class SubCategory extends CI_Controller {
 
         $this->load->model('SubCategoryModel');
 
+
      // $SubCategoryModel =  $this->load->model("SubCategoryModel");
         /*
         $check_auth_client = $this->SubCategoryModel->check_auth_client();

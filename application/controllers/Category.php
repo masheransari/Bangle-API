@@ -49,22 +49,20 @@ class Category extends CI_Controller
     public function create()
     {
         $method = $_SERVER['REQUEST_METHOD'];
+        $data = json_decode($this->input->raw_input_stream, true);
         if ($method != 'POST') {
             json_output(200, $this->common->getGenericErrorResponse(400, 'Bad request.'));
         } else {
             $check_auth_client = $this->MyModel->check_auth_client();
             if ($check_auth_client == true) {
                 $response = $this->MyModel->auth();
-                $respStatus = $response['status'];
                 if ($response['status'] == 200) {
-                    $params = json_decode(file_get_contents('php://input'), TRUE);
-                    if ($params['name'] == "") {
-                        $respStatus = 400;
-                        $resp = array('status' => 400, 'message' => 'Name can\'t empty');
-                    } else {
-                        $resp = $this->CategoryModel->create_data($params);
-                    }
-                    json_output($respStatus, $params);
+                    $params['updated_at'] = date('Y-m-d H:i:s');
+                    $params['name'] = $data['name'];
+                    $params['status'] = 1;
+                    $params['created_by'] = $this->input->get_request_header('User-ID', TRUE);
+                    $this->CategoryModel->create_data($params);
+                    json_output(200, $this->common->getGenericResponse("response", null, "Category Added"));
                 }
             }
         }
@@ -103,6 +101,7 @@ class Category extends CI_Controller
             $check_auth_client = $this->MyModel->check_auth_client();
             if ($check_auth_client == true) {
                 $response = $this->MyModel->auth();
+//                print_r($response);
                 if ($response['status'] == 200) {
                     $params['updated_at'] = date('Y-m-d H:i:s');
                     $params['id'] = $data['id'];

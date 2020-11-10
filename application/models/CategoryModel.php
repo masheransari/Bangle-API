@@ -13,7 +13,7 @@ class CategoryModel extends CI_Model
     public function create_data($data)
     {
         $this->db->insert('category', $data);
-        return array('status' => 201, 'message' => 'Data has been created.');
+        return array('status' => 200, 'message' => 'Data has been created.');
     }
 
     public function update_data($id, $data)
