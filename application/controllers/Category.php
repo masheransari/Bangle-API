@@ -68,6 +68,7 @@ class Category extends CI_Controller
         }
     }
 
+
     public function update()
     {
         $method = $_SERVER['REQUEST_METHOD'];
