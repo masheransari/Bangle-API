@@ -57,10 +57,10 @@ class SubCategory extends CI_Controller
             $check_auth_client = $this->MyModel->check_auth_client();
             if ($check_auth_client == true) {
                 $response = $this->MyModel->auth();
-                $respStatus = $response['status'];
                 if ($response['status'] == 200) {
                     $params['name'] = $data['name'];
                     $params['category_id'] = $data['cid'];
+                    $params['path'] = $data['path'];
                     $params['created_by'] = $this->input->get_request_header('User-ID', TRUE);
                     $params['updated_at'] = date('Y-m-d H:i:s');
                     $params['status'] = 1;
@@ -85,6 +85,7 @@ class SubCategory extends CI_Controller
                     $params['name'] = $data['name'];
                     $params['id'] = $data['id'];
                     $params['updated_at'] = date('Y-m-d H:i:s');
+                    $params['path'] = $data['path'];
                     $params['created_by'] = $this->input->get_request_header('User-ID', TRUE);
                     $resp = $this->SubCategoryModel->update_data($data['id'], $params);
                     json_output(200, $this->common->getGenericResponse("response", null, "Sub Category updated"));
