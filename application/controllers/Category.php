@@ -59,6 +59,7 @@ class Category extends CI_Controller
                 if ($response['status'] == 200) {
                     $params['updated_at'] = date('Y-m-d H:i:s');
                     $params['name'] = $data['name'];
+                    $params['path'] = $data['path'];
                     $params['status'] = 1;
                     $params['created_by'] = $this->input->get_request_header('User-ID', TRUE);
                     $this->CategoryModel->create_data($params);
@@ -83,6 +84,7 @@ class Category extends CI_Controller
                 if ($response['status'] == 200) {
                     $params['updated_at'] = date('Y-m-d H:i:s');
                     $params['name'] = $data['name'];
+                    $params['path'] = $data['path'];
                     $params['id'] = $data['id'];
                     $params['created_by'] = $this->input->get_request_header('User-ID', TRUE);
                     $resp = $this->CategoryModel->update_data($data['id'], $params);
