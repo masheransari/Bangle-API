@@ -22,7 +22,7 @@ class SubCategory extends CI_Controller
             $check_auth_client = $this->MyModel->check_auth_client();
             if ($check_auth_client == true) {
                 $response = $this->MyModel->auth();
-                if ($response['status'] == 200) {
+                if ($response != NULL && $response['status'] == 200) {
                     $resp = $this->SubCategoryModel->all_data();
                     json_output(200, $this->common->getGenericResponse("sub_category", $resp, "Sub Categories Details"));
                 }
@@ -39,7 +39,7 @@ class SubCategory extends CI_Controller
             $check_auth_client = $this->MyModel->check_auth_client();
             if ($check_auth_client == true) {
                 $response = $this->MyModel->auth();
-                if ($response['status'] == 200) {
+                if ($response != NULL && $response['status'] == 200) {
                     $resp = $this->SubCategoryModel->detail_data($id);
                     json_output($response['status'], $resp);
                 }
@@ -57,7 +57,7 @@ class SubCategory extends CI_Controller
             $check_auth_client = $this->MyModel->check_auth_client();
             if ($check_auth_client == true) {
                 $response = $this->MyModel->auth();
-                if ($response['status'] == 200) {
+                if ($response != NULL && $response['status'] == 200) {
                     $params['name'] = $data['name'];
                     $params['category_id'] = $data['cid'];
                     $params['path'] = $data['path'];
@@ -81,7 +81,7 @@ class SubCategory extends CI_Controller
             $check_auth_client = $this->MyModel->check_auth_client();
             if ($check_auth_client == true) {
                 $response = $this->MyModel->auth();
-                if ($response['status'] == 200) {
+                if ($response != NULL && $response['status'] == 200) {
                     $params['name'] = $data['name'];
                     $params['id'] = $data['id'];
                     $params['updated_at'] = date('Y-m-d H:i:s');
@@ -104,7 +104,7 @@ class SubCategory extends CI_Controller
             $check_auth_client = $this->MyModel->check_auth_client();
             if ($check_auth_client == true) {
                 $response = $this->MyModel->auth();
-                if ($response['status'] == 200) {
+                if ($response != NULL && $response['status'] == 200) {
                     $params['id'] = $data['id'];
                     $params['category_id'] = $data['cid'];
                     $params['updated_at'] = date('Y-m-d H:i:s');
@@ -125,7 +125,7 @@ class SubCategory extends CI_Controller
             $check_auth_client = $this->MyModel->check_auth_client();
             if ($check_auth_client == true) {
                 $response = $this->MyModel->auth();
-                if ($response['status'] == 200) {
+                if ($response != NULL && $response['status'] == 200) {
                     $params['updated_at'] = date('Y-m-d H:i:s');
                     $params['id'] = $data['id'];
                     $params['status'] = 0;

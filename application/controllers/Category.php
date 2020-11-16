@@ -38,7 +38,7 @@ class Category extends CI_Controller
             $check_auth_client = $this->MyModel->check_auth_client();
             if ($check_auth_client == true) {
                 $response = $this->MyModel->auth();
-                if ($response['status'] == 200) {
+                if ($response != NULL && $response['status'] == 200) {
                     $resp = $this->CategoryModel->detail_data($id);
                     json_output($response['status'], $resp);
                 }
@@ -56,7 +56,7 @@ class Category extends CI_Controller
             $check_auth_client = $this->MyModel->check_auth_client();
             if ($check_auth_client == true) {
                 $response = $this->MyModel->auth();
-                if ($response['status'] == 200) {
+                if ($response != NULL && $response['status'] == 200) {
                     $params['updated_at'] = date('Y-m-d H:i:s');
                     $params['name'] = $data['name'];
                     $params['path'] = $data['path'];
@@ -81,7 +81,7 @@ class Category extends CI_Controller
             if ($check_auth_client == true) {
                 $response = $this->MyModel->auth();
                 $respStatus = $response['status'];
-                if ($response['status'] == 200) {
+                if ($response != NULL && $response['status'] == 200) {
                     $params['updated_at'] = date('Y-m-d H:i:s');
                     $params['name'] = $data['name'];
                     $params['path'] = $data['path'];
@@ -105,7 +105,7 @@ class Category extends CI_Controller
             if ($check_auth_client == true) {
                 $response = $this->MyModel->auth();
 //                print_r($response);
-                if ($response['status'] == 200) {
+                if ($response != NULL && $response['status'] == 200) {
                     $params['updated_at'] = date('Y-m-d H:i:s');
                     $params['id'] = $data['id'];
                     $params['status'] = 0;

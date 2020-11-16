@@ -28,7 +28,7 @@ class Vendors extends CI_Controller
             $check_auth_client = $this->MyModel->check_auth_client();
             if ($check_auth_client == true) {
                 $response = $this->MyModel->auth();
-                if ($response['status'] == 200) {
+                if ($response != NULL && $response['status'] == 200) {
                     $resp = $this->VendorModel->all_data();
                     json_output(200, $this->common->getGenericResponse("vendors", $resp, "Vendors Listing"));
                 }
@@ -46,7 +46,7 @@ class Vendors extends CI_Controller
             $check_auth_client = $this->MyModel->check_auth_client();
             if ($check_auth_client == true) {
                 $response = $this->MyModel->auth();
-                if ($response['status'] == 200) {
+                if ($response != NULL && $response['status'] == 200) {
                     $id = $data['id'];
                     $resp = $this->VendorModel->detail_data($id);
                     json_output(200, $this->common->getGenericResponse("vendor", $resp, "Vendors Listing"));
@@ -65,7 +65,7 @@ class Vendors extends CI_Controller
             $check_auth_client = $this->MyModel->check_auth_client();
             if ($check_auth_client == true) {
                 $response = $this->MyModel->auth();
-                if ($response['status'] == 200) {
+                if ($response != NULL && $response['status'] == 200) {
                     $params['name'] = $data['name'];
                     $params['phone_no'] = $data['number'];
                     $params['address'] = $data['address'];//0336-8892931
@@ -93,7 +93,7 @@ class Vendors extends CI_Controller
             $check_auth_client = $this->MyModel->check_auth_client();
             if ($check_auth_client == true) {
                 $response = $this->MyModel->auth();
-                if ($response['status'] == 200) {
+                if ($response != NULL && $response['status'] == 200) {
                     $params['name'] = $data['name'];
                     $params['phone_no'] = $data['number'];
                     $params['address'] = $data['address'];
@@ -122,7 +122,7 @@ class Vendors extends CI_Controller
             $check_auth_client = $this->MyModel->check_auth_client();
             if ($check_auth_client == true) {
                 $response = $this->MyModel->auth();
-                if ($response['status'] == 200) {
+                if ($response != NULL && $response['status'] == 200) {
                     $params['updated_at'] = date('Y-m-d H:i:s');
                     $params['id'] = $data['id'];
                     $params['status'] = 0;
