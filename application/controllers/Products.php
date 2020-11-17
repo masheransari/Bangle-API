@@ -1,121 +1,127 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Products extends CI_Controller {
+class Products extends CI_Controller
+{
 
-	public function __construct()
+    public function __construct()
     {
         parent::__construct();
-
         $this->load->model('ProductModel');
-
-     // $ProductModel =  $this->load->model("ProductModel");
-        /*
-        $check_auth_client = $this->ProductModel->check_auth_client();
-		if($check_auth_client != true){
-			die($this->output->get_output());
-		}
-		*/
+        $this->load->library("Common");
     }
 
-	public function index()
-	{
-		$method = $_SERVER['REQUEST_METHOD'];
-		if($method != 'GET'){
-			json_output(400,array('status' => 400,'message' => 'Bad request.'));
-		} else {
-			$check_auth_client = $this->MyModel->check_auth_client();
-			if($check_auth_client == true){
-		        $response = $this->MyModel->auth();
-		        if($response['status'] == 200){
-		        	$resp = $this->ProductModel->all_data();
-	    			json_output($response['status'],$resp);
-		        }
-			}
-		}
-	}
+    public function index()
+    {
+        $method = $_SERVER['REQUEST_METHOD'];
+        if ($method != 'POST') {
+            json_output(200, $this->common->getGenericErrorResponse(400, 'Bad request.'));
+        } else {
+            $check_auth_client = $this->MyModel->check_auth_client();
+            if ($check_auth_client == true) {
+                $response = $this->MyModel->auth();
+                if ($response != NULL && $response['status'] == 200) {
+                    $resp = $this->ProductModel->all_data();
+                    json_output(200, $this->common->getGenericResponse("products", $resp, "Product Listing"));
+                }
+            }
+        }
+    }
 
-	public function detail($id)
-	{
-		$method = $_SERVER['REQUEST_METHOD'];
-		if($method != 'GET' || $this->uri->segment(3) == '' || is_numeric($this->uri->segment(3)) == FALSE){
-			json_output(400,array('status' => 400,'message' => 'Bad request.'));
-		} else {
-			$check_auth_client = $this->MyModel->check_auth_client();
-			if($check_auth_client == true){
-		        $response = $this->MyModel->auth();
-		        if($response['status'] == 200){
-		        	$resp = $this->ProductModel->detail_data($id);
-					json_output($response['status'],$resp);
-		        }
-			}
-		}
-	}
+    public function detail()
+    {
+        $method = $_SERVER['REQUEST_METHOD'];
+        $data = json_decode($this->input->raw_input_stream, true);
+        if ($method != 'POST') {
+            json_output(200, $this->common->getGenericErrorResponse(400, 'Bad request.'));
+        } else {
+            $check_auth_client = $this->MyModel->check_auth_client();
+            if ($check_auth_client == true) {
+                $response = $this->MyModel->auth();
+                if ($response != NULL && $response['status'] == 200) {
+                    $resp = $this->ProductModel->detail_data($data['id']);
+                    json_output(200, $this->common->getGenericResponse("product", $resp, "Product Information"));
+                }
+            }
+        }
+    }
 
-	public function create()
-	{
-		$method = $_SERVER['REQUEST_METHOD'];
-		if($method != 'POST'){
-			json_output(400,array('status' => 400,'message' => 'Bad request.'));
-		} else {
-			$check_auth_client = $this->MyModel->check_auth_client();
-			if($check_auth_client == true){
-		        $response = $this->MyModel->auth();
-		        $respStatus = $response['status'];
-		        if($response['status'] == 200){
-					$params = json_decode(file_get_contents('php://input'), TRUE);
-					if ($params['name'] == "" || $params['sub_category_id'] == "" || $params['vendor_id'] == "" ) {
-						$respStatus = 400;
-						$resp = array('status' => 400,'message' =>  'Name & vendor can\'t empty');
-					} else {
-		        		$resp = $this->ProductModel->create_data($params);
-					}
-					json_output($respStatus,$params);
-		        }
-			}
-		}
-	}
+    public function create()
+    {
+        $method = $_SERVER['REQUEST_METHOD'];
+        $data = json_decode($this->input->raw_input_stream, true);
+        if ($method != 'POST') {
+            json_output(200, $this->common->getGenericErrorResponse(400, 'Bad request.'));
+        } else {
+            $check_auth_client = $this->MyModel->check_auth_client();
+            if ($check_auth_client == true) {
+                $response = $this->MyModel->auth();
+                $respStatus = $response['status'];
+                if ($response != NULL && $response['status'] == 200) {
+                    $res['name'] = $data['name'];
+                    $res['sub_category_id'] = $data['sid'];
+                    $res['purchase_price'] = $data['pprice'];
+                    $res['selling_price'] = $data['sprice'];
+                    $res['img'] = $data['img'];
+                    $res['vendor_id'] = $data['vid'];
+                    $res['created_by'] = $this->input->get_request_header('User-ID', TRUE);
+                    $res['updated_at'] = date('Y-m-d H:i:s');
+                    $res['status'] = 1;
+                    $this->ProductModel->create_data($res);
+                    json_output(200, $this->common->getGenericResponse("response", null, "Product Added"));
+                }
+            }
+        }
+    }
 
-	public function update($id)
-	{
-		$method = $_SERVER['REQUEST_METHOD'];
-		if($method != 'PUT' || $this->uri->segment(3) == '' || is_numeric($this->uri->segment(3)) == FALSE){
-			json_output(400,array('status' => 400,'message' => 'Bad request.'));
-		} else {
-			$check_auth_client = $this->MyModel->check_auth_client();
-			if($check_auth_client == true){
-		        $response = $this->MyModel->auth();
-		        $respStatus = $response['status'];
-		        if($response['status'] == 200){
-					$params = json_decode(file_get_contents('php://input'), TRUE);
-					$params['updated_at'] = date('Y-m-d H:i:s');
-					if ($params['name'] == "" || $params['vendor_id'] == "") {
-						$respStatus = 400;
-						$resp = array('status' => 400,'message' =>  'name & vendor can\'t empty');
-					} else {
-		        		$resp = $this->ProductModel->update_data($id,$params);
-					}
-					json_output($respStatus,$resp);
-		        }
-			}
-		}
-	}
+    public function update()
+    {
+        $method = $_SERVER['REQUEST_METHOD'];
+        $data = json_decode($this->input->raw_input_stream, true);
+        if ($method != 'POST') {
+            json_output(200, $this->common->getGenericErrorResponse(400, 'Bad request.'));
+        } else {
+            $check_auth_client = $this->MyModel->check_auth_client();
+            if ($check_auth_client == true) {
+                $response = $this->MyModel->auth();
+                $respStatus = $response['status'];
+                if ($response != NULL && $response['status'] == 200) {
+                    $res['name'] = $data['name'];
+                    $res['sub_category_id'] = $data['sid'];
+                    $res['purchase_price'] = $data['pprice'];
+                    $res['selling_price'] = $data['sprice'];
+                    $res['img'] = $data['img'];
+                    $res['vendor_id'] = $data['vid'];
+                    $res['created_by'] = $this->input->get_request_header('User-ID', TRUE);
+                    $res['updated_at'] = date('Y-m-d H:i:s');
+                    $res['status'] = 1;
+                    $this->ProductModel->update_data($data['id'], $res);
+                    json_output(200, $this->common->getGenericResponse("response", null, "Product Updated"));
+                }
+            }
+        }
+    }
 
-	public function delete($id)
-	{
-		$method = $_SERVER['REQUEST_METHOD'];
-		if($method != 'DELETE' || $this->uri->segment(3) == '' || is_numeric($this->uri->segment(3)) == FALSE){
-			json_output(400,array('status' => 400,'message' => 'Bad request.'));
-		} else {
-			$check_auth_client = $this->MyModel->check_auth_client();
-			if($check_auth_client == true){
-		        $response = $this->MyModel->auth();
-		        if($response['status'] == 200){
-		        	$resp = $this->ProductModel->delete_data($id);
-					json_output($response['status'],$resp);
-		        }
-			}
-		}
-	}
+    public function delete()
+    {
+        $method = $_SERVER['REQUEST_METHOD'];
+        $data = json_decode($this->input->raw_input_stream, true);
+        if ($method != 'POST') {
+            json_output(200, $this->common->getGenericErrorResponse(400, 'Bad request.'));
+        } else {
+            $check_auth_client = $this->MyModel->check_auth_client();
+            if ($check_auth_client == true) {
+                $response = $this->MyModel->auth();
+                if ($response != NULL && $response['status'] == 200) {
+                    $params['updated_at'] = date('Y-m-d H:i:s');
+                    $params['id'] = $data['id'];
+                    $params['status'] = 0;
+                    $params['created_by'] = $this->input->get_request_header('User-ID', TRUE);
+                    $resp = $this->ProductModel->delete_data($data['id'], $params);
+                    json_output(200, $this->common->getGenericResponse("response", null, "Product Deleted"));
+                }
+            }
+        }
+    }
 
 }

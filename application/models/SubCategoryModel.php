@@ -24,10 +24,10 @@ class SubCategoryModel extends CI_Model
     }
 
 
-    public function delete_data($id,$data)
+    public function delete_data($id, $data)
     {
         $arr = array('id' => $id, 'status' => '1');
-        $this->db->where($arr)->update('sub_category',$data);
+        $this->db->where($arr)->update('sub_category', $data);
         return array('status' => 200, 'message' => 'Data has been deleted.');
     }
 
