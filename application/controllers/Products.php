@@ -56,7 +56,6 @@ class Products extends CI_Controller
             $check_auth_client = $this->MyModel->check_auth_client();
             if ($check_auth_client == true) {
                 $response = $this->MyModel->auth();
-                $respStatus = $response['status'];
                 if ($response != NULL && $response['status'] == 200) {
                     $res['name'] = $data['name'];
                     $res['sub_category_id'] = $data['sid'];
@@ -66,6 +65,7 @@ class Products extends CI_Controller
                     $res['vendor_id'] = $data['vid'];
                     $res['created_by'] = $this->input->get_request_header('User-ID', TRUE);
                     $res['updated_at'] = date('Y-m-d H:i:s');
+                    $res['created_at'] = date('Y-m-d H:i:s');
                     $res['status'] = 1;
                     $this->ProductModel->create_data($res);
                     json_output(200, $this->common->getGenericResponse("response", null, "Product Added"));
@@ -84,7 +84,6 @@ class Products extends CI_Controller
             $check_auth_client = $this->MyModel->check_auth_client();
             if ($check_auth_client == true) {
                 $response = $this->MyModel->auth();
-                $respStatus = $response['status'];
                 if ($response != NULL && $response['status'] == 200) {
                     $res['name'] = $data['name'];
                     $res['sub_category_id'] = $data['sid'];

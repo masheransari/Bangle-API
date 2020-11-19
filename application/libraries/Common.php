@@ -15,6 +15,12 @@ class Common
         return $this->returnResponse(200, $message, $data);
     }
 
+    public function getDualGenericResponse($key, $keyValue, $key1, $keyValue1, $message)
+    {
+        $data = array('success' => true, $key => $keyValue, $key1 => $keyValue1);
+        return $this->returnResponse(200, $message, $data);
+    }
+
     public function getGenericErrorResponse($responseCode, $message)
     {
         $errREsponse = $this->generateFalseResponse();

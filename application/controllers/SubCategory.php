@@ -9,6 +9,7 @@ class SubCategory extends CI_Controller
         parent::__construct();
 
         $this->load->model('SubCategoryModel');
+        $this->load->model('CategoryModel');
         $this->load->library("Common");
 
     }
@@ -42,6 +43,23 @@ class SubCategory extends CI_Controller
                 if ($response != NULL && $response['status'] == 200) {
                     $resp = $this->SubCategoryModel->detail_data($id);
                     json_output($response['status'], $resp);
+                }
+            }
+        }
+    }
+    public function subcategoriesbycatid()
+    {
+        $method = $_SERVER['REQUEST_METHOD'];
+        $data = json_decode($this->input->raw_input_stream, true);
+        if ($method != 'POST') {
+            json_output(200, $this->common->getGenericErrorResponse(400, 'Bad request.'));
+        } else {
+            $check_auth_client = $this->MyModel->check_auth_client();
+            if ($check_auth_client == true) {
+                $response = $this->MyModel->auth();
+                if ($response != NULL && $response['status'] == 200) {
+                    $resp = $this->SubCategoryModel->sub_cat_listing($data['id']);
+                    json_output(200, $this->common->getGenericResponse("sub_category", $resp, "Sub Categories Details"));
                 }
             }
         }
@@ -115,6 +133,7 @@ class SubCategory extends CI_Controller
             }
         }
     }
+
     public function delete()
     {
         $method = $_SERVER['REQUEST_METHOD'];
@@ -130,8 +149,27 @@ class SubCategory extends CI_Controller
                     $params['id'] = $data['id'];
                     $params['status'] = 0;
                     $params['created_by'] = $this->input->get_request_header('User-ID', TRUE);
-                    $resp = $this->SubCategoryModel->delete_data($data['id'],$params);
+                    $resp = $this->SubCategoryModel->delete_data($data['id'], $params);
                     json_output(200, $this->common->getGenericResponse("response", null, "Sub Category Deleted"));
+                }
+            }
+        }
+    }
+
+    public function fetchBothCategories()
+    {
+        $method = $_SERVER['REQUEST_METHOD'];
+        $data = json_decode($this->input->raw_input_stream, true);
+        if ($method != 'POST') {
+            json_output(200, $this->common->getGenericErrorResponse(400, 'Bad request.'));
+        } else {
+            $check_auth_client = $this->MyModel->check_auth_client();
+            if ($check_auth_client == true) {
+                $response = $this->MyModel->auth();
+                if ($response != NULL && $response['status'] == 200) {
+                    $respSub = $this->SubCategoryModel->all_data();
+                    $respCate = $this->CategoryModel->all_data();
+                    json_output(200, $this->common->getDualGenericResponse("sub_category", $respSub, "categories", $respCate, "Sub Categories Details"));
                 }
             }
         }
