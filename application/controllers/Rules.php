@@ -1,14 +1,15 @@
 <?php
+
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Products extends CI_Controller
-{
 
+class Rules extends CI_Controller
+{
     public function __construct()
     {
         parent::__construct();
-        $this->load->model('ProductModel');
         $this->load->library("Common");
+        $this->load->model('RulesModel');
     }
 
     public function index()
@@ -21,8 +22,8 @@ class Products extends CI_Controller
             if ($check_auth_client == true) {
                 $response = $this->MyModel->auth();
                 if ($response != NULL && $response['status'] == 200) {
-                    $resp = $this->ProductModel->all_data();
-                    json_output(200, $this->common->getGenericResponse("products", $resp, "Product Listing"));
+                    $resp = $this->RulesModel->all_data();
+                    json_output(200, $this->common->getGenericResponse("rules", $resp, "Customers Listing"));
                 }
             }
         }
@@ -39,14 +40,16 @@ class Products extends CI_Controller
             if ($check_auth_client == true) {
                 $response = $this->MyModel->auth();
                 if ($response != NULL && $response['status'] == 200) {
-                    $resp = $this->ProductModel->detail_data($data['id']);
-                    json_output(200, $this->common->getGenericResponse("product", $resp, "Product Information"));
+                    $id = $data['id'];
+                    $resp = $this->RulesModel->detail_data($id);
+                    json_output(200, $this->common->getGenericResponse("rule", $resp, "Customers Listing"));
                 }
             }
         }
     }
 
     public function create()
+
     {
         $method = $_SERVER['REQUEST_METHOD'];
         $data = json_decode($this->input->raw_input_stream, true);
@@ -57,18 +60,14 @@ class Products extends CI_Controller
             if ($check_auth_client == true) {
                 $response = $this->MyModel->auth();
                 if ($response != NULL && $response['status'] == 200) {
-                    $res['name'] = $data['name'];
-                    $res['sub_category_id'] = $data['sid'];
-                    $res['purchase_price'] = $data['pprice'];
-                    $res['selling_price'] = $data['sprice'];
-                    $res['img'] = $data['img'];
-                    $res['vendor_id'] = $data['vid'];
-                    $res['created_by'] = $this->input->get_request_header('User-ID', TRUE);
-                    $res['updated_at'] = date('Y-m-d H:i:s');
-                    $res['created_at'] = date('Y-m-d H:i:s');
-                    $res['status'] = 1;
-                    $this->ProductModel->create_data($res);
-                    json_output(200, $this->common->getGenericResponse("response", null, "Product Added"));
+                    $params['name'] = $data['name'];
+                    $params['limit'] = $data['limit'];
+                    $params['created_by'] = $this->input->get_request_header('User-ID', TRUE);
+                    $params['updated_at'] = date('Y-m-d H:i:s');
+                    $params['created_at'] = date('Y-m-d H:i:s');
+                    $params['status'] = 1;
+                    $this->RulesModel->create_data($params);
+                    json_output(200, $this->common->getGenericResponse("response", null, "Customer Added"));
                 }
             }
         }
@@ -85,16 +84,13 @@ class Products extends CI_Controller
             if ($check_auth_client == true) {
                 $response = $this->MyModel->auth();
                 if ($response != NULL && $response['status'] == 200) {
-                    $res['name'] = $data['name'];
-                    $res['sub_category_id'] = $data['sid'];
-                    $res['purchase_price'] = $data['pprice'];
-                    $res['selling_price'] = $data['sprice'];
-                    $res['img'] = $data['img'];
-                    $res['vendor_id'] = $data['vid'];
-                    $res['created_by'] = $this->input->get_request_header('User-ID', TRUE);
-                    $res['updated_at'] = date('Y-m-d H:i:s');
-                    $res['status'] = 1;
-                    $this->ProductModel->update_data($data['id'], $res);
+                    $params['name'] = $data['name'];
+                    $params['limit'] = $data['limit'];
+                    $params['created_by'] = $this->input->get_request_header('User-ID', TRUE);
+                    $params['status'] = 1;
+                    $params['updated_at'] = date('Y-m-d H:i:s');
+                    $params['status'] = 1;
+                    $this->RulesModel->update_data($data['id'], $params);
                     json_output(200, $this->common->getGenericResponse("response", null, "Product Updated"));
                 }
             }
@@ -115,11 +111,10 @@ class Products extends CI_Controller
                     $params['updated_at'] = date('Y-m-d H:i:s');
                     $params['id'] = $data['id'];
                     $params['status'] = 0;
-                    $this->ProductModel->delete_data($data['id'], $params);
+                    $this->RulesModel->delete_data($data['id'], $params);
                     json_output(200, $this->common->getGenericResponse("response", null, "Product Deleted"));
                 }
             }
         }
     }
-
 }
