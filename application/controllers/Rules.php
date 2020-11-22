@@ -67,7 +67,7 @@ class Rules extends CI_Controller
                     $params['created_at'] = date('Y-m-d H:i:s');
                     $params['status'] = 1;
                     $this->RulesModel->create_data($params);
-                    json_output(200, $this->common->getGenericResponse("response", null, "Customer Added"));
+                    json_output(200, $this->common->getGenericResponse("response", null, "Rule Added"));
                 }
             }
         }
@@ -91,7 +91,7 @@ class Rules extends CI_Controller
                     $params['updated_at'] = date('Y-m-d H:i:s');
                     $params['status'] = 1;
                     $this->RulesModel->update_data($data['id'], $params);
-                    json_output(200, $this->common->getGenericResponse("response", null, "Product Updated"));
+                    json_output(200, $this->common->getGenericResponse("response", null, "Rule Updated"));
                 }
             }
         }
@@ -112,7 +112,7 @@ class Rules extends CI_Controller
                     $params['id'] = $data['id'];
                     $params['status'] = 0;
                     $this->RulesModel->delete_data($data['id'], $params);
-                    json_output(200, $this->common->getGenericResponse("response", null, "Product Deleted"));
+                    json_output(200, $this->common->getGenericResponse("response", null, "Rule Deleted"));
                 }
             }
         }

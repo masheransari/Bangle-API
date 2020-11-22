@@ -6,7 +6,8 @@ class RulesModel extends CI_Model
 {
     public function detail_data($id)
     {
-        return $this->db->select('*')->from('rules')->where('id', $id)->order_by('id', 'desc')->get()->row();
+        $arr = array("id" => $id, "status" => 1);
+        return $this->db->select('*')->from('rules')->where($arr)->order_by('id', 'desc')->get()->row();
     }
 
     public function create_data($data)
@@ -29,7 +30,6 @@ class RulesModel extends CI_Model
     {
         return $this->db->select('*')->from("rules")->where('status', '1')->order_by('id', 'desc')->get()->result();
     }
-
 
 
 }
