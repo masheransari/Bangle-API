@@ -8,7 +8,7 @@ class Vendors extends CI_Controller
     {
         parent::__construct();
         $this->load->library("Common");
-        //$this->load->model('VendorModel');
+        $this->load->model('VendorModel');
 
         // $VendorModel =  $this->load->model("VendorModel");
         /*
