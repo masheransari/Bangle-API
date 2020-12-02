@@ -4,6 +4,13 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class Auth extends CI_Controller
 {
 
+    public function __construct()
+    {
+        parent::__construct();
+        $this->load->library("ion_auth");
+        $this->load->model('UserModel');
+    }
+
     public function login()
     {
         $method = $_SERVER['REQUEST_METHOD'];
@@ -81,5 +88,19 @@ class Auth extends CI_Controller
             }
         }
     }
+
+    public function change_password()
+    {
+        $method = $_SERVER['REQUEST_METHOD'];
+        if ($method != 'POST') {
+            json_output(400, array('status' => 400, 'message' => 'Bad request.'));
+        } else {
+            $data = json_decode($this->input->raw_input_stream, true);
+            $uId = $this->input->get_request_header('User-ID', TRUE);
+            $response = $this->ion_auth->change_password_custom($uId, $data['old'], $data['new']);
+            json_output(200, $response);
+        }
+    }
+
 
 }

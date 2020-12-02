@@ -23,7 +23,7 @@ class MyModel extends CI_Model
 
     public function login($username, $password)
     {
-        $q = $this->db->select('password,id')->from('users')->where('email', $username)->get()->row();
+        $q = $this->db->select('*')->from('users')->where('email', $username)->get()->row();
 
         if ($q == "") {
             return $this->common->getGenericErrorResponse(204, 'Username not found.');
@@ -43,8 +43,7 @@ class MyModel extends CI_Model
                     return $this->common->getGenericErrorResponse(500, 'Internal server error.');
                 } else {
                     $this->db->trans_commit();
-                    $object = ['id' => $id, 'token' => $token];
-                    return $this->common->getGenericResponse('user', $object, 'Successfully login.');
+                    return $this->common->getDualGenericResponse('token', $token,"user",$q, 'Successfully login.');
                 }
             } else {
                 return $this->common->getGenericErrorResponse(204, 'Credentials are not valid');
