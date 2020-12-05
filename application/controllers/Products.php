@@ -115,7 +115,8 @@ class Products extends CI_Controller
                     $params['updated_at'] = date('Y-m-d H:i:s');
                     $params['id'] = $data['id'];
                     $params['status'] = 0;
-                    $this->ProductModel->delete_data($data['id'], $params);
+                    $params['created_by'] = $this->input->get_request_header('User-ID', TRUE);
+                    $resp = $this->ProductModel->delete_data($data['id'], $params);
                     json_output(200, $this->common->getGenericResponse("response", null, "Product Deleted"));
                 }
             }

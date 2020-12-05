@@ -95,10 +95,13 @@ class Auth extends CI_Controller
         if ($method != 'POST') {
             json_output(400, array('status' => 400, 'message' => 'Bad request.'));
         } else {
-            $data = json_decode($this->input->raw_input_stream, true);
-            $uId = $this->input->get_request_header('User-ID', TRUE);
-            $response = $this->ion_auth->change_password_custom($uId, $data['old'], $data['new']);
-            json_output(200, $response);
+            $response = $this->MyModel->auth();
+            if ($response != NULL && $response['status'] == 200) {
+                $data = json_decode($this->input->raw_input_stream, true);
+                $uId = $this->input->get_request_header('User-ID', TRUE);
+                $response = $this->ion_auth->change_password_custom($uId, $data['old'], $data['new']);
+                json_output(200, $response);
+            }
         }
     }
 
