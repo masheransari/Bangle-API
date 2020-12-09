@@ -28,6 +28,29 @@ class Products extends CI_Controller
         }
     }
 
+    public function search()
+    {
+        $method = $_SERVER['REQUEST_METHOD'];
+        if ($method != 'POST') {
+            json_output(200, $this->common->getGenericErrorResponse(400, 'Bad request.'));
+        } else {
+            $check_auth_client = $this->MyModel->check_auth_client();
+            if ($check_auth_client == true) {
+                $response = $this->MyModel->auth();
+                if ($response != NULL && $response['status'] == 200) {
+                    $data = json_decode($this->input->raw_input_stream, true);
+                    if (isset($data['keyword'])) {
+//                        $resp = $this->ProductModel->all_data();
+                        $resp = $this->ProductModel->get_keyword_product($data['keyword']);
+                        json_output(200, $this->common->getGenericResponse("products", $resp, "Product Listing"));
+                    } else {
+                        json_output(200, $this->common->getGenericErrorResponse(404, 'No Keywords Found.'));
+                    }
+                }
+            }
+        }
+    }
+
     public function detail()
     {
         $method = $_SERVER['REQUEST_METHOD'];
