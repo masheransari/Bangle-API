@@ -68,7 +68,6 @@ class Products extends CI_Controller
                         "category.status" => 1,
                         "vendors.status" => 1);
 
-
                     if (isset($data['vendor'])) {
                         $where['products.vendor_id'] = $data['vendor'];
                     }
@@ -84,7 +83,7 @@ class Products extends CI_Controller
                     if (isset($data['s_price_ending'])) {
                         $where['products.selling_price<='] = $data['s_price_ending'];
                     }
-                    if (isset($data['s_id'])){
+                    if (isset($data['s_id'])) {
                         $where['products.sub_category_id'] = $data['s_id'];
                     }
 
@@ -93,7 +92,11 @@ class Products extends CI_Controller
                     } else {
                         $resp = $this->ProductModel->get_advance_products(null, $where);
                     }
-                    json_output(200, $this->common->getGenericResponse("products", $resp, "Product Listing"));
+                    if (sizeof($resp)) {
+                        json_output(200, $this->common->getGenericResponse("products", $resp, "Product Listing"));
+                    } else {
+                        json_output(200, $this->common->getGenericErrorResponse(201, 'No product found.'));
+                    }
                 }
             }
         }
