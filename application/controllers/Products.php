@@ -51,6 +51,54 @@ class Products extends CI_Controller
         }
     }
 
+    public function advance_search()
+    {
+        $method = $_SERVER['REQUEST_METHOD'];
+        if ($method != 'POST') {
+            json_output(200, $this->common->getGenericErrorResponse(400, 'Bad request.'));
+        } else {
+            $check_auth_client = $this->MyModel->check_auth_client();
+            if ($check_auth_client == true) {
+                $response = $this->MyModel->auth();
+                if ($response != NULL && $response['status'] == 200) {
+                    $data = json_decode($this->input->raw_input_stream, true);
+                    //$where = array();
+                    $where = array("products.status" => 1,
+                        "sub_category.status" => 1,
+                        "category.status" => 1,
+                        "vendors.status" => 1);
+
+
+                    if (isset($data['vendor'])) {
+                        $where['products.vendor_id'] = $data['vendor'];
+                    }
+                    if (isset($data['p_price_starting'])) {
+                        $where['products.purchase_price>='] = $data['p_price_starting'];
+                    }
+                    if (isset($data['p_price_ending'])) {
+                        $where['products.purchase_price<='] = $data['p_price_ending'];
+                    }
+                    if (isset($data['s_price_starting'])) {
+                        $where['products.selling_price>='] = $data['s_price_starting'];
+                    }
+                    if (isset($data['s_price_ending'])) {
+                        $where['products.selling_price<='] = $data['s_price_ending'];
+                    }
+                    if (isset($data['s_id'])){
+                        $where['products.sub_category_id'] = $data['s_id'];
+                    }
+
+                    if (isset($data['name'])) {
+                        $resp = $this->ProductModel->get_advance_products($data['name'], $where);
+                    } else {
+                        $resp = $this->ProductModel->get_advance_products(null, $where);
+                    }
+                    json_output(200, $this->common->getGenericResponse("products", $resp, "Product Listing"));
+                }
+            }
+        }
+    }
+
     public function detail()
     {
         $method = $_SERVER['REQUEST_METHOD'];

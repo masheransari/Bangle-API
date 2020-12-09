@@ -39,7 +39,17 @@ class ProductModel extends CI_Model
     public function get_keyword_product($keywords)
     {
         $arr = array("products.status" => 1, "sub_category.status" => 1, "category.status" => 1, "vendors.status" => 1);
-        return $this->db->select('products.id as id,products.name, products.purchase_price,products.selling_price,products.img,products.created_at, products.name as name, sub_category.name as subname,sub_category.path as spath, sub_category.id as subid, category.name as cname, category.id as cid, category.path as cpath, products.vendor_id, vendors.name as vname, vendors.address as vaddress, vendors.phone_no as number,vendors.path as vPath')->from("products")->join('sub_category', 'sub_category.id=products.sub_category_id', "left")->join('category', 'category.id=sub_category.category_id', "left")->join('vendors', 'vendors.id=products.vendor_id', "left")->where($arr)->like('products.name', $keywords)->order_by('products.id', 'desc')->get()->result();
+        $array = array('products.name' => $keywords);
+        return $this->db->select('products.id as id,products.name, products.purchase_price,products.selling_price,products.img,products.created_at, products.name as name, sub_category.name as subname,sub_category.path as spath, sub_category.id as subid, category.name as cname, category.id as cid, category.path as cpath, products.vendor_id, vendors.name as vname, vendors.address as vaddress, vendors.phone_no as number,vendors.path as vPath')->from("products")->join('sub_category', 'sub_category.id=products.sub_category_id', "left")->join('category', 'category.id=sub_category.category_id', "left")->join('vendors', 'vendors.id=products.vendor_id', "left")->where($arr)->like($array)->order_by('products.id', 'desc')->get()->result();
+    }
+
+    public function get_advance_products($name, $whereArr)
+    {
+        if ($name != null) {
+            return $this->db->select('products.id as id,products.name, products.purchase_price,products.selling_price,products.img,products.created_at, products.name as name, sub_category.name as subname,sub_category.path as spath, sub_category.id as subid, category.name as cname, category.id as cid, category.path as cpath, products.vendor_id, vendors.name as vname, vendors.address as vaddress, vendors.phone_no as number,vendors.path as vPath')->from("products")->join('sub_category', 'sub_category.id=products.sub_category_id', "left")->join('category', 'category.id=sub_category.category_id', "left")->join('vendors', 'vendors.id=products.vendor_id', "left")->where($whereArr)->like("products.name", $name)->order_by('products.id', 'desc')->get()->result();
+        } else {
+            return $this->db->select('products.id as id,products.name, products.purchase_price,products.selling_price,products.img,products.created_at, products.name as name, sub_category.name as subname,sub_category.path as spath, sub_category.id as subid, category.name as cname, category.id as cid, category.path as cpath, products.vendor_id, vendors.name as vname, vendors.address as vaddress, vendors.phone_no as number,vendors.path as vPath')->from("products")->join('sub_category', 'sub_category.id=products.sub_category_id', "left")->join('category', 'category.id=sub_category.category_id', "left")->join('vendors', 'vendors.id=products.vendor_id', "left")->where($whereArr)->order_by('products.id', 'desc')->get()->result();
+        }
     }
 
 }
