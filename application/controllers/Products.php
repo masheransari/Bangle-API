@@ -9,6 +9,7 @@ class Products extends CI_Controller
         parent::__construct();
         $this->load->model('ProductModel');
         $this->load->library("Common");
+
     }
 
     public function index()
@@ -22,6 +23,24 @@ class Products extends CI_Controller
                 $response = $this->MyModel->auth();
                 if ($response != NULL && $response['status'] == 200) {
                     $resp = $this->ProductModel->all_data();
+                    json_output(200, $this->common->getGenericResponse("products", $resp, "Product Listing"));
+                }
+            }
+        }
+    }
+
+    public function vendor_products()
+    {
+        $method = $_SERVER['REQUEST_METHOD'];
+        if ($method != 'POST') {
+            json_output(200, $this->common->getGenericErrorResponse(400, 'Bad request.'));
+        } else {
+            $check_auth_client = $this->MyModel->check_auth_client();
+            if ($check_auth_client == true) {
+                $response = $this->MyModel->auth();
+                $data = json_decode($this->input->raw_input_stream, true);
+                if ($response != NULL && $response['status'] == 200) {
+                    $resp = $this->ProductModel->getProductByVendors($data['vendor_id']);
                     json_output(200, $this->common->getGenericResponse("products", $resp, "Product Listing"));
                 }
             }

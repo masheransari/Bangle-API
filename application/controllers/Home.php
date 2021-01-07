@@ -27,14 +27,33 @@ class Home extends CI_Controller
                 $response = $this->MyModel->auth();
                 if ($response != NULL && $response['status'] == 200) {
                     $arr = array(
-                        "category"=>sizeof($this->CategoryModel->all_data()),
-                        "subCategory"=>sizeof($this->SubCategoryModel->all_data()),
-                        "customer"=>sizeof($this->CustomerModel->all_data()),
-                        "vendor"=>sizeof($this->VendorModel->all_data()),
-                        "rule"=>sizeof($this->RulesModel->all_data()),
-                        "product"=>sizeof($this->ProductModel->all_data())
+                        "category" => sizeof($this->CategoryModel->all_data()),
+                        "subCategory" => sizeof($this->SubCategoryModel->all_data()),
+                        "customer" => sizeof($this->CustomerModel->all_data()),
+                        "vendor" => sizeof($this->VendorModel->all_data()),
+                        "rule" => sizeof($this->RulesModel->all_data()),
+                        "product" => sizeof($this->ProductModel->all_data())
                     );
                     json_output(200, $this->common->getGenericResponse("home", $arr, "Home Listing"));
+                }
+            }
+        }
+    }
+
+    public function get_filter_items()
+    {
+        $method = $_SERVER['REQUEST_METHOD'];
+        if ($method != 'POST') {
+            json_output(400, array('status' => 400, 'message' => 'Bad request.'));
+        } else {
+            $check_auth_client = $this->MyModel->check_auth_client();
+            if ($check_auth_client == true) {
+                $response = $this->MyModel->auth();
+                if ($response != NULL && $response['status'] == 200) {
+                    $arr = array(
+                        "categories" => $this->CategoryModel->all_data(),
+                        "vendors" => $this->VendorModel->all_data());
+                    json_output(200, $this->common->getGenericResponse("filter", $arr, "Filter Listing"));
                 }
             }
         }
