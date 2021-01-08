@@ -1,12 +1,12 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Inventory extends CI_Controller
+class Purchasing extends CI_Controller
 {
     public function __construct()
     {
         parent::__construct();
-        $this->load->model('InventoryModel');
+        $this->load->model('PurchasingModel');
         $this->load->library("Common");
     }
 
@@ -20,28 +20,28 @@ class Inventory extends CI_Controller
             if ($check_auth_client == true) {
                 $response = $this->MyModel->auth();
                 if ($response != NULL && $response['status'] == 200) {
-                    $resp = $this->InventoryModel->get_all(null);
+                    $resp = $this->PurchasingModel->get_all(null);
                     if ($resp != null && count($resp) > 0) {
                         for ($x = 0; $x < count($resp); $x++) {
                             $invoice = $resp[$x]->invoice_number;
                             $vendor = $resp[$x]->vendor_id;
-                            $details = $this->InventoryModel->getInvoiceDetailsByVendorId(
+                            $details = $this->PurchasingModel->getInvoiceDetailsByVendorId(
                                 $invoice,
                                 $vendor
                             );
                             $resp[$x]->details = $details;
                         }
 
-                        json_output(200, $this->common->getGenericResponse("inventory", $resp, "Inventory Founds"));
+                        json_output(200, $this->common->getGenericResponse("purchasing", $resp, "Purchasing Founds"));
                     } else {
-                        json_output(200, $this->common->getGenericResponse("inventory", null, "No Inventory Found"));
+                        json_output(200, $this->common->getGenericResponse("purchasing", null, "No Purchasing Found"));
                     }
                 }
             }
         }
     }
 
-    public function vendor_inventory()
+    public function vendor_purchasing()
     {
         $method = $_SERVER['REQUEST_METHOD'];
         if ($method != 'POST') {
@@ -52,21 +52,21 @@ class Inventory extends CI_Controller
                 $response = $this->MyModel->auth();
                 if ($response != NULL && $response['status'] == 200) {
                     $data = json_decode($this->input->raw_input_stream, true);
-                    $resp = $this->InventoryModel->get_all($data['vendor_id']);
+                    $resp = $this->PurchasingModel->get_all($data['vendor_id']);
                     if ($resp != null && count($resp) > 0) {
                         for ($x = 0; $x < count($resp); $x++) {
                             $invoice = $resp[$x]->invoice_number;
                             $vendor = $resp[$x]->vendor_id;
-                            $details = $this->InventoryModel->getInvoiceDetailsByVendorId(
+                            $details = $this->PurchasingModel->getInvoiceDetailsByVendorId(
                                 $invoice,
                                 $vendor
                             );
                             $resp[$x]->details = $details;
                         }
 
-                        json_output(200, $this->common->getGenericResponse("inventory", $resp, "Inventory Founds"));
+                        json_output(200, $this->common->getGenericResponse("purchasing", $resp, "Purchasing Founds"));
                     } else {
-                        json_output(200, $this->common->getGenericResponse("inventory", null, "No Inventory Found"));
+                        json_output(200, $this->common->getGenericResponse("purchasing", null, "No Purchasing Found"));
                     }
                 }
             }
@@ -80,7 +80,7 @@ class Inventory extends CI_Controller
         $invoice = "";
         while (!$found) {
             $invoice = "RUS-" . (rand(1000, 100000) + 10000);
-            $resp = $this->InventoryModel->checkInvoiceNumberExists($invoice);
+            $resp = $this->PurchasingModel->checkInvoiceNumberExists($invoice);
             if ($resp != null && count($resp) > 0) {
 
             } else {
@@ -90,7 +90,7 @@ class Inventory extends CI_Controller
         return $invoice;
     }
 
-    public function add_inventory()
+    public function add_purchasing()
     {
         $method = $_SERVER['REQUEST_METHOD'];
         $data = json_decode($this->input->raw_input_stream, true);
@@ -115,13 +115,14 @@ class Inventory extends CI_Controller
                         $data[$x]['date'] = date('Y-m-d H:i:s');
                         $data[$x]['created_at'] = $currentDate;
                         $data[$x]['updated_at'] = $currentDate;
-                        $data[$x]['created_at'] = $this->input->get_request_header('User-ID', TRUE);
+                        $data[$x]['created_by'] = $this->input->get_request_header('User-ID', TRUE);
+                        $data[$x]['updated_by'] = $this->input->get_request_header('User-ID', TRUE);
                         $data[$x]['status'] = 1;
-                        $this->InventoryModel->create_data("inventory", $data[$x]);
+                        $this->PurchasingModel->create_data("purchase", $data[$x]);
                     }
 //
                     $timeStamp = date('Y-m-d H:i:s');
-                    $inventoryBill = array(
+                    $purchasingBill = array(
                         "vendor_id" => $data[0]['vendor_id'],
                         "invoice_number" => $invoiceNumber,
                         "total_amount" => $totalAmount,
@@ -133,9 +134,9 @@ class Inventory extends CI_Controller
                         "updated_at" => $timeStamp,
                         "status" => 1,
                     );
-                    $this->InventoryModel->create_data("inventory_bill", $inventoryBill);
+                    $this->PurchasingModel->create_data("purchase_bill", $purchasingBill);
 
-                    json_output(200, $this->common->getGenericResponse("response", null, "Inventory Added"));
+                    json_output(200, $this->common->getGenericResponse("response", null, "Purchasing Added"));
                 }
             }
         }
