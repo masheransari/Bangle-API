@@ -21,6 +21,7 @@ class Purchasing extends CI_Controller
                 $response = $this->MyModel->auth();
                 if ($response != NULL && $response['status'] == 200) {
                     $resp = $this->PurchasingModel->get_all(null);
+                    $price_count = array();
                     if ($resp != null && count($resp) > 0) {
                         for ($x = 0; $x < count($resp); $x++) {
                             $invoice = $resp[$x]->invoice_number;
@@ -29,9 +30,24 @@ class Purchasing extends CI_Controller
                                 $invoice,
                                 $vendor
                             );
+                            if (isset($price_count['total_amount'])) {
+                                $price_count['total_amount'] = $price_count['total_amount'] + floatval($resp[$x]->total_amount);
+                            } else {
+                                $price_count['total_amount'] = floatval($resp[$x]->total_amount);
+                            }
+                            if (isset($price_count['amount_paid'])) {
+                                $price_count['amount_paid'] = $price_count['amount_paid'] + floatval($resp[$x]->amount_paid);
+                            } else {
+                                $price_count['amount_paid'] = floatval($resp[$x]->amount_paid);
+                            }
+                            if (isset($price_count['remaining_amount'])) {
+                                $price_count['remaining_amount'] = $price_count['remaining_amount'] + floatval($resp[$x]->remaining_amount);
+                            } else {
+                                $price_count['remaining_amount'] = floatval($resp[$x]->remaining_amount);
+                            }
+                            $resp[$x]->amount = $price_count;
                             $resp[$x]->details = $details;
                         }
-
                         json_output(200, $this->common->getGenericResponse("purchasing", $resp, "Purchasing Founds"));
                     } else {
                         json_output(200, $this->common->getGenericResponse("purchasing", null, "No Purchasing Found"));
