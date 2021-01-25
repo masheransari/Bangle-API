@@ -49,7 +49,7 @@ class Vendors extends CI_Controller
                 if ($response != NULL && $response['status'] == 200) {
                     $id = $data['id'];
                     $resp = $this->VendorModel->detail_data($id);
-                    json_output(200, $this->common->getGenericResponse("vendor", $resp, "Vendors Listing"));
+                    json_output(200, $this->common->getGenericResponse("vendor", $resp, "Vendor Detail"));
                 }
             }
         }

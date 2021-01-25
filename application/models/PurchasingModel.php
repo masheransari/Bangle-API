@@ -29,15 +29,12 @@ class PurchasingModel extends CI_Model
     {
         $arr = array("invoice_number" => $invoiceStr);
         return $this->db->select('id')->from("purchase_bill")->where($arr)->get()->row();
-
     }
 
     public function getInvoiceDetailsByVendorId($invoiceStr, $vendorId)
     {
         $arr = array("purchase.invoice_number" => $invoiceStr, "purchase.vendor_id" => $vendorId, "products.status" => 1, "sub_category.status" => 1, "category.status" => 1);
         return $this->db->select('purchase.*,products.name as pName,products.img as pImage,sub_category.name as subname,sub_category.path as spath, sub_category.id as subid, category.name as cname, category.id as cid, category.path as cpath')->from("purchase")->join('products', 'purchase.product_id=products.id', "left")->join('sub_category', 'sub_category.id=products.sub_category_id', "left")->join('category', 'category.id=sub_category.category_id', "left")->where($arr)->get()->result();
-
-
     }
 
 }
