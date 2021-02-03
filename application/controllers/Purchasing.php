@@ -136,10 +136,14 @@ class Purchasing extends CI_Controller
                         $where['purchase_bill.invoice_number'] = $data['invoice_number'];
                     }
                     if (isset($data['start_date'])) {
-                        $where['purchase_bill.updated_at  >='] = $data['start_date'];
+                        if (isset($data['end_date'])) {
+                            $where['purchase_bill.date >='] = $data['start_date'];
+                        } else {
+                            $where['purchase_bill.date'] = $data['start_date'];
+                        }
                     }
                     if (isset($data['end_date'])) {
-                        $where['purchase_bill.updated_at  <='] = $data['end_date'];
+                        $where['purchase_bill.updated_at <='] = $data['end_date'];
                     }
                     $resp = $this->PurchasingModel->get_filter($where);
                     $price_count = array();

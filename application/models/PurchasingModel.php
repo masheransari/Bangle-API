@@ -20,7 +20,7 @@ class PurchasingModel extends CI_Model
     }
     public function get_filter($where)
     {
-        return $this->db->select('purchase_bill1.*,vendors.name as vname, vendors.address as vaddress, vendors.phone_no as vnumber,vendors.path as vPath')->from("purchase_bill")->join('vendors', 'vendors.id=purchase_bill.vendor_id', "left")->where($where)->order_by('purchase_bill.id', 'desc')->get()->result();
+        return $this->db->select('purchase_bill.*,vendors.name as vname, vendors.address as vaddress, vendors.phone_no as vnumber,vendors.path as vPath')->from("purchase_bill")->join('vendors', 'vendors.id=purchase_bill.vendor_id', "left")->where($where)->order_by('purchase_bill.id', 'desc')->get()->result();
     }
 
     public function detail_data($id)
